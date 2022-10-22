@@ -79,39 +79,29 @@ function turnHoursToMinutes(moviesArray) {
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
 function bestYearAvg(moviesArray) {
     if(!moviesArray.length) {return null}
-    let anos = []
-    moviesArray.forEach( function(movie){
-        if (!anos.includes(movie.year)){
-            anos.push(movie.year)
+    let nova = moviesArray.reduce( function (acumulador, movie){
+        if (!acumulador[movie.year]){
+            acumulador[movie.year] = []
         }
-    })
+        
+        acumulador[movie.year].push(movie.score)
 
-    let resumo = []
-    for (let ano of anos){
-        let total = []
-        moviesArray.forEach( function(movie){
-            if (movie.year === ano){
-                total.push(movie.score)
-            }
-        })
+        return acumulador
 
-        let media = total.reduce( function(soma, valor){
-            return soma + valor
-        },0)
-
-        resumo.push({ano: ano, media: media/total.length})
-    }
-
+    }, {})
     let maximo = 0
-    let ano = ''
-    resumo.forEach( function(movie){
-        if (movie.media > maximo){
-            maximo = movie.media
-            ano = movie.ano
-        } else if ((movie.media === maximo) && (movie.ano < ano)){
-            ano = movie.ano
-        }
-    })
+    let ano = 10000
+    for(let key in nova){
 
+        let total = nova[key].reduce( function (soma, valor) {
+            return soma + valor
+        }, 0) / nova[key].length
+
+        if (total > maximo){
+            maximo = total
+            ano = key
+        } 
+    }
+    
     return `The best year was ${ano} with an average score of ${maximo}`
 }
